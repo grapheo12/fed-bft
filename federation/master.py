@@ -105,6 +105,13 @@ def collectModel(sizes):
     base.load_state_dict(torch.load("outputs/main.pt"))
     faults = detectFaults(base, worker_models, weights)
 
+    new_total = 0
+    for i in range(len(weights)):
+        if not(i in faults):
+            new_total += sizemap[i]
+    
+    weights = [a * total_size / new_total for a in weights]
+
     net = Net()
     sd = net.state_dict()
 
