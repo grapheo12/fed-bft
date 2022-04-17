@@ -17,7 +17,8 @@ def createModel():
     net = Net()
     net.apply(init_weights)
 
-    shutil.rmtree("outputs/*.pt", ignore_errors=True)
+    shutil.rmtree("outputs")
+    os.mkdir("outputs")
     torch.save(net.state_dict(), "outputs/main.pt")
 
 
@@ -30,7 +31,7 @@ def fedTrain(nodes, C):
         print(rq.text)
 
 
-def detectFaults(base, updates, weights, threshold=-0.7):
+def detectFaults(base, updates, weights, threshold=0.1):
     diffs = [Net() for _ in range(len(updates))]
     for i, diff in enumerate(diffs):
         sd = diff.state_dict()
@@ -39,7 +40,7 @@ def detectFaults(base, updates, weights, threshold=-0.7):
             _param -= updates[i].state_dict()[layer] * weights[i]
             param.copy_(_param)
 
-    dangerCnt = [set() for _ in range(len(weights))]
+    dangerCnt = [[] for _ in range(len(weights))]
 
     for i in range(len(weights)):
         for j in range(i + 1, len(weights)):
@@ -53,8 +54,18 @@ def detectFaults(base, updates, weights, threshold=-0.7):
 
                 dist = torch.inner(s1, s2)
                 if dist < threshold:
-                    dangerCnt[i].add(j)
-                    dangerCnt[j].add(i)
+                    dangerCnt[i].append(j)
+                    dangerCnt[j].append(i)
+
+    tot_layer = len(base.state_dict())
+    for i, arr in enumerate(dangerCnt):
+        sarr = set(arr)
+        fin = set()
+        for j in sarr:
+            if arr.count(j) >= tot_layer // 2 + 1:
+                fin.add(j)
+        dangerCnt[i] = fin
+
 
     faults = []
     for i in range(len(dangerCnt)):
