@@ -5,7 +5,7 @@ def getMNIST():
         transforms.ToTensor(),
         transforms.Normalize((0.1307,), (0.3081,))
         ])
-    dataset1 = datasets.EMNIST('data', split="digits", train=True, download=True,
+    dataset1 = datasets.MNIST('data', train=True, download=True,
                        transform=transform)
-    dataset2 = datasets.EMNIST('data', split="digits", train=False,
+    dataset2 = datasets.MNIST('data', train=False,
                        transform=transform)

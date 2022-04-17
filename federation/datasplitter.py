@@ -9,9 +9,9 @@ def splitData(n=2):
         transforms.ToTensor(),
         transforms.Normalize((0.1307,), (0.3081,))
         ])
-    dataset1 = datasets.EMNIST('data', split="digits", train=True, download=False,
+    dataset1 = datasets.MNIST('data', train=True, download=False,
                        transform=transform)
-    dataset2 = datasets.EMNIST('data', split="digits", train=False,
+    dataset2 = datasets.MNIST('data', train=False,
                        transform=transform)
 
     Ntrain = len(dataset1) // n
