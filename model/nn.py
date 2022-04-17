@@ -30,7 +30,7 @@ class Net(nn.Module):
 
 
 
-def train(model, device, train_loader, optimizer):
+def train(model, device, train_loader, optimizer, byz=False):
     model.train()
     for batch_idx, (data, target) in enumerate(train_loader):
         data, target = data.to(device), target.to(device)
@@ -38,6 +38,12 @@ def train(model, device, train_loader, optimizer):
         output = model(data)
         loss = F.nll_loss(output, target)
         loss.backward()
+        
+        # Byzantine training, reverse grad direction
+        if byz:
+            for param in model.parameters():
+                param.grad *= -1
+
         optimizer.step()
         print('[{}/{} ({:.0f}%)]\tLoss: {:.6f}'.format(
             batch_idx * len(data), len(train_loader.dataset),

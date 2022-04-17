@@ -7,12 +7,12 @@ import torch.optim as optim
 from model.nn import Net, train
 from threading import Thread
 
-def train_proc(model, op, data, id):
-    train(model, "cpu", data, op)
+def train_proc(model, op, data, id, byz=False):
+    train(model, "cpu", data, op, byz=byz)
     torch.save(model.state_dict(), "outputs/worker" + str(id) + ".pt")
 
 
-def run_app(id, port):
+def run_app(id, port, byzantine=False):
     app = Flask(__name__)
 
     @app.route("/train")
@@ -24,7 +24,7 @@ def run_app(id, port):
             train_sets = pickle.load(f)
         train_loader = torch.utils.data.DataLoader(train_sets[id], batch_size=1000)
         p = Thread(target=train_proc,
-            args=(model, optimizer, train_loader, id))
+            args=(model, optimizer, train_loader, id, byzantine))
         p.start()
 
         return jsonify({

@@ -36,7 +36,11 @@ if __name__ == "__main__":
     if argv[1] == "worker":
         idx = int(argv[2])
         port = int(argv[3])
-        run_app(idx, port)
+        byz = False
+        if len(argv) == 5 and argv[4] == "byz":
+            byz = True
+
+        run_app(idx, port, byzantine=byz)
 
     if argv[1] == "collect":
         sizes = {int(x.split(":")[0]): int(x.split(":")[1]) for x in argv[2:]}
