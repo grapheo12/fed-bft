@@ -15,7 +15,7 @@ Following are the important contents of this repository
 
 | Name | Roll No. |
 |------|----------|
-| Debajyoti Deasgupta | 18CS30051 |
+| Debajyoti Dasgupta | 18CS30051 |
 | Shubham Mishra | 18CS10066 |
 | Sagnik Roy | 18CS10063 | 
 | Somnath Jena | 18CS30047 |
